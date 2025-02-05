@@ -1,0 +1,17 @@
+p {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #864646;
+    line-height: 1.6;
+    margin: 20px 0;
+    text-align: justify;
+}
+
+p.highlight {
+    font-weight: bold;
+    color: #ff6347; /* Tomato color */
+}
+
+p.indented {
+    text-indent: 30px;
+}
