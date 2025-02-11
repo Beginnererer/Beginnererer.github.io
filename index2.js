@@ -48,7 +48,7 @@ fetch('https://www.iremitx.com/MyService.asmx?op=GetAgents', { // Replace with a
       'Content-Type': 'application/json' // Specifies JSON format
     },
     body: JSON.stringify({ 
-      token: '123456', //
+      token: '', //
       branch_id: 1
     }) // Convert JavaScript object to JSON
   })
