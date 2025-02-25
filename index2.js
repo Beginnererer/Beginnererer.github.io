@@ -1,67 +1,98 @@
-/* function changeParagraph() {
-    document.getElementById("demo").innerHTML = "Paragraph changed.";
-}
 
-function addNumbers() {
-    document.getElementById("demo2").innerHTML = 5 + 6;
-}
-*/
+        
+        function fetchData() {
+            const id = document.getElementById("idInput").value;
+            if (!id) {
+                alert("Input the Customer ID");
+                return;
+            }
 
+            const username = "irxdigital";
+            const password = "test123";
+            const credentials = btoa(`${username}:${password}`);
+            
+            const apiUrl = `https://dev.i-cash.app:448/api/inquire/virtual-account?merchantCustomerId=${id}`; // Replace with your API URL
 
-/* document.addEventListener("DOMContentLoaded", function () {
+            fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Basic ${credentials}`,
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Invalid Network Response");
+                }
+                return response.json();
+            })
+            .then(data => {
 
-    let demo = document.getElementById("demo");
-    let demo2 = document.getElementById("demo2");
+                document.getElementById("result").innerText = data.statusMessage;
+            })
+            .catch(error => {
+                document.getElementById("result").innerText = "Error: " + error.message;
+            });
+        }
 
-    document.querySelector("button").addEventListener("click", changeParagraph);
-    demo2.addEventListener("click", addNumbers);
-});
+function generateQRP2P() {
+  // Predefined values
+  const merchantCode = "IRXDIGITAL";
+  const merchantCustomerId = "MER_CUST001";
+  const firstName = "Amiel";
+  const lastName = "Ildesa";
+  const merchantTransactionId = "TRANSACT0004";
 
+  const username = "irxdigital";
+  const password = "test123";
+  const credentials = btoa(`${username}:${password}`);
 
-function changeParagraph() {
-    document.getElementById("demo").innerHTML = "Paragraph changed.";
-}
+  // User input for transaction amount
+  const amount = parseFloat(document.getElementById("amount").value);
 
-function addNumbers() {
-    document.getElementById("demo2").innerHTML = 5 + 6;
-}
+  // Validate input
+  if (isNaN(amount) || amount <= 0) {
+      alert("Please enter a valid amount!");
+      return;
+  }
 
-window.onload = function() {
-    alert("Page has loaded!");
-};
+  const apiUrl = "https://dev.i-cash.app:448/api/merchant/generate-trans-qr";
 
-document.addEventListener("DOMContentLoaded", function () {
-    let a, b, c;
-    a = 5;
-    b = 6;
-    c = a + b;
+  const requestData = {
 
-    document.getElementById("demo3").innerHTML = 
-        "a = " + a + "<br>" +
-        "b = " + b + "<br>" +
-        "c = " + c;
-}); */
+      merchantCode: merchantCode,
+      merchantCustomerId: merchantCustomerId,
+      firstName: firstName,
+      lastName: lastName,
+      merchantTransactionId: merchantTransactionId,
+      amount: amount,
+  };
 
-fetch('https://www.iremitx.com/MyService.asmx?op=GetAgents', { // Replace with actual API URL
-    method: 'POST', 
+  fetch(apiUrl, {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json' // Specifies JSON format
+        "Authorization": `Basic ${credentials}`,
+        "Content-Type": "application/json"
     },
-    body: JSON.stringify({ 
-      token: '', //
-      branch_id: 1
-    }) // Convert JavaScript object to JSON
+      body: JSON.stringify(requestData)
   })
   .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    return response.json(); // Parse JSON response
+      if (!response.ok) {
+          throw new Error("Failed to generate image");
+      }
+      return response.json(); // Assuming the API returns JSON with image URL
   })
   .then(data => {
-    console.log('Success:', data); // Handle success response
+    console.log(data.base64Image);
+      const imageUrl = data.base64Image; // Adjust based on API response structure
+      
+      // Show image
+      const imgElement = document.getElementById("QRP2PResult");
+      imgElement.src = imageUrl;
+      imgElement.style.display = "block";
   })
   .catch(error => {
-    console.error('Error:', error);
+      console.error("Error:", error);
+      alert("Error generating image. Please try again.");
   });
-  
+}
